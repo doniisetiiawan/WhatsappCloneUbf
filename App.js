@@ -1,15 +1,9 @@
+/* eslint-disable react/jsx-filename-extension */
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import Apps from './src';
+import 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,3 +13,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default function App() {
+  return (
+    <Apps />
+  );
+}
