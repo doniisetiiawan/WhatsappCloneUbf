@@ -20,3 +20,5 @@ export const setListener = (endpoint, updaterFn) => {
   firebase.database().ref(endpoint).on('value', updaterFn);
   return () => firebase.database().ref(endpoint).off();
 };
+
+export const pushData = (endpoint, data) => firebase.database().ref(endpoint).push(data);

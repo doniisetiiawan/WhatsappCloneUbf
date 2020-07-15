@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Button,
   FlatList,
   ImageBackground,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { getMessages, getMockData } from '../services/api';
+import { getMessages, postMessage } from '../services/api';
 import background from '../assets/imgs/background.png';
+import Compose from '../components/Compose';
 
 const styles = StyleSheet.create({
   container: {
@@ -84,10 +85,7 @@ export default class Home extends React.Component {
           renderItem={({ item }) => this.getMessageRow(item)}
           keyExtractor={(item, index) => `message-${index}`}
         />
-        <Button
-          onPress={() => this.props.navigation.goBack()}
-          title="Navigate to Home Screen"
-        />
+        <Compose submit={postMessage} />
       </ImageBackground>
     );
   }
