@@ -8,7 +8,7 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import { getMockData } from '../services/api';
+import { getMessages, getMockData } from '../services/api';
 import background from '../assets/imgs/background.png';
 
 const styles = StyleSheet.create({
@@ -47,11 +47,17 @@ export default class Home extends React.Component {
       title: `Chat with ${this.props.route.params.name}`,
     });
 
-    getMockData().then((messages) => {
-      this.setState({
-        messages,
-      });
-    });
+    this.unsubscribeGetMessages = getMessages(
+      (snapshot) => {
+        this.setState({
+          messages: Object.values(snapshot.val()),
+        });
+      },
+    );
+  };
+
+  componentWillUnmount = () => {
+    this.unsubscribeGetMessages();
   };
 
   getMessageRow = (item) => (

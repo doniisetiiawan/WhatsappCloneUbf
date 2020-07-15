@@ -1,3 +1,5 @@
+import { initialize, setListener } from './firebase';
+
 export const mockMessages = [
   {
     incoming: true,
@@ -20,3 +22,7 @@ export const mockMessages = [
 
 // eslint-disable-next-line max-len
 export const getMockData = () => new Promise((resolve) => setTimeout(() => resolve(mockMessages), 1000));
+
+export const initApi = () => initialize();
+
+export const getMessages = (updaterFn) => setListener('messages', updaterFn);
