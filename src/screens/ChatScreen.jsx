@@ -1,16 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  Button,
   FlatList,
   ImageBackground,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { getMessages, postMessage } from '../services/api';
+import { connect } from 'react-redux';
 import background from '../assets/imgs/background.png';
 import Compose from '../components/Compose';
+import {
+  postMessageToServer,
+  subscribeToGetMessagesFromServer,
+  unSubscribeToGetMessagesFromServer,
+} from '../actions';
+import { getMessagesSelector } from '../reducers/messagesReducer';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,31 +39,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Home extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      messages: [],
-    };
-  }
-
+class ChatScreen extends React.Component {
   componentDidMount = () => {
     this.props.navigation.setOptions({
       title: `Chat with ${this.props.route.params.name}`,
     });
 
-    this.unsubscribeGetMessages = getMessages(
-      (snapshot) => {
-        this.setState({
-          messages: Object.values(snapshot.val()),
-        });
-      },
-    );
+    this.props.subscribeToGetMessagesFromServer();
   };
 
   componentWillUnmount = () => {
-    this.unsubscribeGetMessages();
+    this.props.unSubscribeToGetMessagesFromServer();
   };
 
   getMessageRow = (item) => (
@@ -81,17 +72,29 @@ export default class Home extends React.Component {
         source={background}
       >
         <FlatList
-          data={this.state.messages}
+          data={this.props.messages}
           renderItem={({ item }) => this.getMessageRow(item)}
           keyExtractor={(item, index) => `message-${index}`}
         />
-        <Compose submit={postMessage} />
+        <Compose submit={this.props.postMessageToServer} />
       </ImageBackground>
     );
   }
 }
 
-Home.propTypes = {
+function mapStateToProps(state) {
+  return {
+    messages: getMessagesSelector(state),
+  };
+}
+
+export default connect(mapStateToProps, {
+  postMessageToServer,
+  subscribeToGetMessagesFromServer,
+  unSubscribeToGetMessagesFromServer,
+})(ChatScreen);
+
+ChatScreen.propTypes = {
   navigation: PropTypes.objectOf(PropTypes.any).isRequired,
   route: PropTypes.objectOf(PropTypes.any).isRequired,
 };
